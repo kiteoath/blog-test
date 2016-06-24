@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>专题列表页</title>
+<link rel="stylesheet" type="text/css" href="/public/css/blog.css"/>
+<script type="text/javascript" src="/public/js/jquery-1.12.0.min.js"></script>
+<script type="text/javascript" src="/public/js/masonry.pkgd.min.js"></script>
+<script type="text/javascript" src="/public/js/imagesloaded.pkgd.min.js"></script>
+</head>
+
+<body>
+{{include "sub-cont"}}
+<div class="page-cont">
+    <div class="author-article">
+        <div class="cover" {{if author.cover !== ""}} style="background-image:url({{author.cover}});"{{/if}}></div>
+        <div class="avator" {{if author.avator !== ""}} style="background-image:url({{author.avator}});"{{/if}}></div>
+    	<h1>{{author.nickname || author.username}}</h1>
+        <div class="artile">{{#author.brief}}</div>
+        <p>{{articles.length}}篇文章</p>
+    </div>
+	<div class="special-list">
+        <div class="list-cont">
+            {{each articles}}
+            <div class="item text">
+                <div class="main">
+                    <h2>{{$value.title}}</h2>
+                    {{if $value.background && $value.background != ""}}
+                    <img src="{{$value.background}}" alt="">
+                    {{/if}}
+                    <div class="brief">
+                        {{#$value.brief}}
+                    </div>
+                    <a href="/article/{{$value.articleid}}" class="link"><span class="date">{{moment($value.create_at).format("YYYY-MM-DD")}}</span></a>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+	</div>
+</div>
+<script type="text/javascript">
+	var $grid = $('.list-cont').masonry({
+		itemSelector: '.item'
+	});
+	// layout Masonry after each image loads
+	$grid.imagesLoaded().progress( function() {
+		$grid.masonry('layout');
+	});
+</script>
+</body>
+</html>

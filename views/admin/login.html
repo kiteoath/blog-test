@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>登陆</title>
+    <link href="/public/css/admin.css" rel="stylesheet" />
+    <script type="text/javascript" src="/public/js/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript">
+        var $loginBg = {
+            width: 1600,
+            height: 820,
+            marginLeft : -800
+        };
+        $loginBg.ratio = $loginBg.width / $loginBg.height;
+
+        var $window = {
+            width: $(window).width(),
+            height: $(window).height()
+        };
+        $window.ratio = $window.width / $window.height;
+        
+        $(window).on("resize", function () {
+            $window = {
+                width: $(window).width(),
+                height: $(window).height()
+            }
+            $window.ratio = $window.width / $window.height;
+            fixLoginBg();
+        });
+
+        function fixLoginBg() {
+            if ($loginBg.ratio < $window.ratio) {
+                $loginBg.width = $window.width;
+                $loginBg.height = $window.width / $loginBg.ratio;
+            } else {
+                $loginBg.width = $window.height * $loginBg.ratio;
+                $loginBg.height = $window.height;
+            }
+            $loginBg.ratio = $loginBg.width / $loginBg.height;
+            $loginBg.marginLeft = -$loginBg.width / 2;
+
+            $(".login-bg").css($loginBg);
+        }
+    </script>
+</head>
+<body>
+    <div class="login-cont">
+        <img src="/public/images/login-bg.jpg" alt="" class="login-bg">
+        <script type="text/javascript">fixLoginBg();</script>
+        <form class="wrap" action="" method="POST">
+            <div class="login">
+                <div class="tit"><img src="/public/images/logo-login.png" /><i></i>股权众筹企业管理后台</div>
+                <ul>
+                    <li>
+                        <input type="text" class="t" id="" name="username" placeholder="请输入用户名">
+                    </li>
+                    <li>
+                        <input type="password" class="t" id="" name="userpwd" placeholder="请输入密码">
+                    </li>
+                </ul>
+                <span class="btn-login">立即登录</span>
+                {{if msg}}<div class="valid">{{msg}}</div>{{/if}}
+            </div>
+        </form>
+    </div>
+    <script>
+        $(".btn-login").on("click", function(){
+            $("form").submit();
+        });
+    </script>
+</body>
+</html>

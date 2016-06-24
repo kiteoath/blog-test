@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>首页</title>
+<link rel="stylesheet" type="text/css" href="/public/css/blog.css"/>
+<script type="text/javascript" src="/public/js/jquery-1.12.0.min.js"></script>
+<script type="text/javascript" src="/public/js/masonry.pkgd.min.js"></script>
+<script type="text/javascript" src="/public/js/imagesloaded.pkgd.min.js"></script>
+</head>
+
+<body>
+{{include "sub-cont"}}
+<div class="page-cont">
+    <div class="slider">
+    	<div class="info">
+        	<h2>简书</h2>
+            <h3>相信谎言的人必将在真理之前毁灭。</h3>
+            <p>—— 赫尔巴特</p>
+        </div>
+    	<ul>
+    		<li style="background-image:url(/public/images/sub-slider-1.jpg);"></li>
+    		<li style="background-image:url(/public/images/sub-slider-2.jpg);"></li>
+    	</ul>
+    </div>
+	<div class="page-list">
+        <div class="list-cont">
+            {{each articles}}
+            <div class="item text">
+                <div class="main">
+                    <h2>{{$value.title}}</h2>
+                    {{if $value.background && $value.background != ""}}
+                    <img src="{{$value.background}}" alt="">
+                    {{/if}}
+                    <div class="brief">
+                        {{#$value.brief}}
+                    </div>
+                    <a href="/article/{{$value.articleid}}" class="link"><span class="date">{{moment($value.create_at).format("YYYY-MM-DD")}}</span></a>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+	</div>
+</div>
+<script type="text/javascript">
+	var $grid = $('.list-cont').masonry({
+		itemSelector: '.item'
+	});
+	// layout Masonry after each image loads
+	$grid.imagesLoaded().progress( function() {
+		$grid.masonry('layout');
+	});
+</script>
+</body>
+</html>
