@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导航设置</title>
+
+    {{include "public/head"}}
+    <style>
+        .base-edit .btn-del{ display:inline-block; width:32px; height:32px; background:url(/public/images/ico-btn-del.png) no-repeat center center; cursor:pointer;}
+        .base-edit .btn-add{ display:inline-block; width:32px; height:32px; background:url(/public/images/ico-btn-add.png) no-repeat center center; cursor:pointer;}
+        .base-edit .btn-save{ display:inline-block; width:32px; height:32px; background:url(/public/images/ico-btn-save.png) no-repeat center center; cursor:pointer;}
+    </style>
+</head>
+<body>
+    {{include "public/top"}}
+    {{include "public/nav"}}
+    <div class="container">
+
+        <div class="content">
+            <h2 class="title">邀请注册</h2>
+            <form class="wrap base-edit article-edit" action="" method="post">
+                <ul>
+                    {{each navigation}}
+                    <li data-id="{{$value.id}}">
+                        <input type="text" name="name" id="" class="t name" value="{{$value.name}}" placeholder="标题">
+                        <input type="text" name="url" id="" class="t url" value="{{$value.url}}" placeholder="http://www.">
+                        <span class="btn-del"></span>
+                        <span class="btn-save"></span>
+                    </li>
+                    {{/each}}
+                    <li class="add">
+                        <input type="text" name="name" id="" class="t name" value="" placeholder="标题">
+                        <input type="text" name="url" id="" class="t url" value="" placeholder="http://www.">
+                        <span class="btn-add"></span>
+                    </li>
+                </ul>
+
+            </form>
+        </div>
+        <script>
+            $(".base-edit").on("click", ".btn-add", function () {
+                var $this = $(this);
+                var $wrap = $this.parent();
+                var $name = $wrap.find(".name");
+                var $url = $wrap.find(".url");
+                var tpl = [ '<li data-id="{id}">',
+                                '<input type="text" name="name" id="" class="t name" value="{name}" placeholder="标题">',
+                                '<input type="text" name="url" id="" class="t url" value="{url}" placeholder="http://www.">',
+                                '<span class="btn-del"></span>',
+                                '<span class="btn-save"></span>',
+                            '</li>'
+                          ].join("").replace("{name}", $name.val())
+                                    .replace("{url}", $url.val())
+
+
+                $.ajax({
+                    url : "/admin/settings/navigation?action=new",
+                    method : "post",
+                    data : {name : $name.val(), url : $url.val()},
+                    success : function (data) {
+                        if(data.status == 0){
+                            $(".add").before(tpl.replace("{id}", data.id));
+                            $(".add").find(".name").val("");
+                            $(".add").find(".url").val("");
+                            layer.open({
+                                type : 1,
+                                title : "提示",
+                                area : ["500px", "auto"],
+                                btn : ["确定"],
+                                content : '<p style="line-height:30px;font-size:16px;text-align:center;padding:50px;">添加成功</p>',
+                            });
+                        }else{
+                            layer.open({
+                                type : 1,
+                                title : "提示",
+                                area : ["500px", "auto"],
+                                btn : ["确定"],
+                                content : '<p style="line-height:30px;font-size:16px;text-align:center;padding:50px;">错误提示：' + data.msg + '</p>',
+                            });
+                        }
+                    }
+                })
+            })
+
+            $(".base-edit").on("click", ".btn-del", function () {
+                var $this = $(this);
+                var $wrap = $this.parent();
+                var $id = $wrap.attr("data-id");
+
+
+                $.ajax({
+                    url : "/admin/settings/navigation?action=del",
+                    method : "post",
+                    data : {id : $id},
+                    success : function (data) {
+                        if(data.status == 0){
+                            $wrap.remove();
+                            layer.open({
+                                type : 1,
+                                title : "提示",
+                                area : ["500px", "auto"],
+                                btn : ["确定"],
+                                content : '<p style="line-height:30px;font-size:16px;text-align:center;padding:50px;">删除成功</p>',
+                            });
+                        }else{
+                            layer.open({
+                                type : 1,
+                                title : "提示",
+                                area : ["500px", "auto"],
+                                btn : ["确定"],
+                                content : '<p style="line-height:30px;font-size:16px;text-align:center;padding:50px;">错误提示：' + data.msg + '</p>',
+                            });
+                        }
+                    }
+                })
+            })
+
+            $(".base-edit").on("click", ".btn-save", function () {
+                var $this = $(this);
+                var $wrap = $this.parent();
+                var $id = $wrap.attr("data-id");
+                var $name = $wrap.find(".name");
+                var $url = $wrap.find(".url");
+
+                $.ajax({
+                    url : "/admin/settings/navigation?action=modify",
+                    method : "post",
+                    data : {id : $id, name : $name.val(), url : $url.val()},
+                    success : function (data) {
+                        if(data.status == 0){
+                            layer.open({
+                                type : 1,
+                                title : "提示",
+                                area : ["500px", "auto"],
+                                btn : ["确定"],
+                                content : '<p style="line-height:30px;font-size:16px;text-align:center;padding:50px;">保存成功</p>',
+                            });
+                        }else{
+                            layer.open({
+                                type : 1,
+                                title : "提示",
+                                area : ["500px", "auto"],
+                                btn : ["确定"],
+                                content : '<p style="line-height:30px;font-size:16px;text-align:center;padding:50px;">错误提示：' + data.msg + '</p>',
+                            });
+                        }
+                    }
+                })
+            })
+        </script>
+    </div>
+</body>
+</html>

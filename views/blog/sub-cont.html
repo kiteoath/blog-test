@@ -1,15 +1,13 @@
 <div class="sub-cont">
-	<div class="profile"><a href="/"><img src="/public/images/heart.jpg" /></a></div>
+	<div class="profile"><a href="/"><img src="{{ sets.logo || '/public/images/ico-default.png'}}" /></a></div>
     <div class="sub-name">
-    	<h2>张三的博客</h2>
-        <p>一句话鸡汤文简介</p>
+    	<h2>{{sets.name}}</h2>
+        <p>{{sets.brief}}</p>
     </div>
     <ul class="sub-nav">
-    	<li><a href="">首页</a></li>
-        <li><a href="">分类一</a></li>
-        <li><a href="">分类二</a></li>
-        <li><a href="">分类三</a></li>
-        <li><a href="">分类四</a></li>
+        {{each nav}}
+    	<li><a href="{{$value.url}}">{{$value.name}}</a></li>
+        {{/each}}
     </ul>
     <div class="sub-link">
     	<a href="" class="ico github"></a>

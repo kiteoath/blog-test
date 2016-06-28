@@ -7,10 +7,10 @@ var articleSchema = new Schema({
     background : {type : String, default : null},
     brief : {type : String, default : null},
     content : {type : String, default : null},
-    feature : {type : String, default : null},
-    recommend : {type : String, default : null},
-    status : {type : String, default : null},
-    author : {type : String, ref : "User"},
+    feature : {type : String, require : true},
+    recommend : {type : String, require : true},
+    status : {type : String, require : true},
+    author : {type : String, require : true},
 
     create_at : {type : Date, default : Date.now},
     update_at : {type : Date, default : Date.now}

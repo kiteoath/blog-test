@@ -18,7 +18,7 @@
         	{{#article.content}}
 		</div>
         <div class="info">
-            <p class="name">作者：<a href="/author/{{article.author.uid}}">{{article.author.nickname || article.author.username}}</a></p>
+            <p class="name">作者：<a href="/author/{{author.uid}}">{{author.nickname || author.username}}</a></p>
         	<p class="date">发表日期：{{moment(article.create_at).format("YYYY-MM-DD")}}</p>
         </div>
     </div>

@@ -1,5 +1,5 @@
     <div class="head">
         <span class="logout"><a href="/admin/logout">安全退出</a></span>
-        <div class="user"><span>{{user.nickname || user.username}}</span>，您好！</div>
-        <div class="tit">股权众筹后台管理中心</div>
+        <div class="user"><span onclick="location.href='/admin/team/edit/{{user.uid}}'" style="cursor:pointer;">{{user.nickname || user.username}}</span>，您好！</div>
+        <div class="tit">{{settings.name}}|后台管理中心</div>
     </div>

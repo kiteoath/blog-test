@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>全局设置</title>
+
+    {{include "public/head"}}
+    <style>
+        .droppable-area-article{ min-height:auto; height:200px; line-height:200px; text-align:center; font-size:20px; color:#646565; background:#ededed; border:2px dashed #cbcbcb; padding:0; position:relative; cursor:pointer;}
+        .droppable-area-article.logo{ width:200px; line-height:50px; padding-top:50px; box-sizing:border-box;}
+        .droppable-area-article .proccess{ display:none; width:80%; height:20px; background:#ccc; border-radius:10px; margin-top:-10px; position:absolute; left:10%; top:50%;}
+        .droppable-area-article .proccess .proccess_bar{ width:0; height:100%; background:#1DC116; border-radius:10px; position:absolute; left:0; top:0;}
+        .droppable-area-article .preview{ display:none; width:100%; height:100%; background-position:center center; background-repeat:no-repeat; background-size:cover; position:absolute; left:0; top:0; cursor:default;}
+
+        .droppable-area-article .btn-change{ display:none; width:32px; height:32px; border-radius:4px; box-shadow:rgba(255, 255, 255, 0.2) 0 0 0 1px; background:url(/public/images/ico-delete.png) no-repeat; position:absolute; right:10px; top:10px; cursor:pointer; transition:background 0.3s;}
+        .droppable-area-article .btn-change:hover{ background-color:rgba(0, 0, 0, 0.2);}
+    </style>
+    <script src="/public/js/dropzone/dropzone.min.js"></script>
+</head>
+<body>
+    {{include "public/top"}}
+    {{include "public/nav"}}
+    <div class="container">
+
+        <div class="content">
+            <h2 class="title">邀请注册</h2>
+            <form class="wrap base-edit article-edit" action="" method="post">
+                <ul>
+                    <li>
+                        <div class="tit">博客名称：</div>
+                        <input type="text" name="name" id="" class="t" value="{{settings.name}}">
+                        <p>为你的博客取一个响亮的名字</p>
+                    </li>
+                    <li>
+                        <div class="tit">博客简介：</div>
+                        <textarea name="brief" id="" cols="30" rows="10">{{settings.brief}}</textarea>
+                        <p>简单介绍一下你的博客</p>
+                    </li>
+                    <li>
+                        <div class="tit">博客 Logo：</div>
+                        <div id="logoDropzone" class="droppable-area-article logo">
+                            Drop files here(or click) to upload
+                            <input type="hidden" class="info" name="logo"{{if settings.logo}} value="{{settings.logo}}"{{/if}}>
+                            <div class="proccess">
+                                <div class="proccess_bar"></div>
+                            </div>
+                            <div class="preview"{{if settings.logo}} style="display:block;background-image:url({{settings.logo}})"{{/if}}>
+                                <span class="btn-change"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="tit">博客封面图：</div>
+                        <div id="backgroundDropzone" class="droppable-area-article">
+                            Drop files here(or click) to upload
+                            <input type="hidden" class="info" name="background"{{if settings.background}} value="{{settings.logo}}"{{/if}}>
+                            <div class="proccess">
+                                <div class="proccess_bar"></div>
+                            </div>
+                            <div class="preview"{{if settings.background}} style="display:block;background-image:url({{settings.background}})"{{/if}}>
+                                <span class="btn-change"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="tit">每页显示博文数：</div>
+                        <input type="number" name="page" class="t" id="" min="1" max="100" value="{{settings.page}}">
+                        <p>设置每页显示博文的数量</p>
+                    </li>
+                    <li>
+                        <span class="btn btn-submit">提交</span>
+                        <a class="btn btn-back" href="/admin/article/list">返回</a>
+                    </li>
+                </ul>
+
+            </form>
+        </div>
+        <script>
+            $(".btn-submit").on("click", function () {
+                $("form").submit();
+            });
+            $(".droppable-area-article").dropzone({
+                url: '/admin/uploadfile',
+                // Events
+                init : function () {
+                    var that = this;
+                    if($(that.element).find(".preview").css("background-image") != "none"){
+                        $(this.element).find(".btn-change").show();
+                    }
+                    $(this.element).find(".btn-change").on("click", function () {
+                        $(this).hide();
+                        $(that.element).find(".preview").removeAttr("style");
+                    })
+                },
+                addedfile: function(file){
+                    $(this.element).find(".proccess").show();
+                    $(this.element).find(".proccess .proccess_bar").width(0);
+                    console.log(file);
+                },
+
+                uploadprogress: function(file, progress, bytesSent){
+                    $(this.element).find(".proccess .proccess_bar").width(progress + '%');
+                },
+
+                success: function(file, res){
+                    console.log(res);
+                    articleCover = res.url;
+                    $(this.element).find(".proccess").hide();
+                    $(this.element).find(".btn-change").show();
+                    $(this.element).find(".preview").css({"background-image" : "url(" + res.url + ")"}).show();
+                    $(this.element).find(".info").val(res.url);
+                },
+
+                error: function(){
+                    $(this.element).find(".proccess").removeClass('progress-bar-warning').addClass('progress-bar-red');
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

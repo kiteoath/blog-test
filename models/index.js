@@ -16,8 +16,12 @@ mongoose.connect(config.mongodb, option, function(err){
 
 require("./article");
 require("./user");
+require("./settings");
+require("./navigation");
 
 module.exports = {
     Article : mongoose.model("Article"),
-    User : mongoose.model("User")
+    User : mongoose.model("User"),
+    Settings : mongoose.model("Settings"),
+    Navigation : mongoose.model("Navigation")
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导航设置</title>
+
+    {{include "public/head"}}
+</head>
+<body>
+    {{include "public/top"}}
+    {{include "public/nav"}}
+    <div class="container">
+
+        <div class="content">
+            <h2 class="title">修改密码</h2>
+            <form class="wrap base-edit article-edit" action="" method="post">
+                <ul>
+                    <li>
+                        <div class="tit">原密码：</div>
+                        <input type="password" name="userpwd" id="" class="t" value="">
+                    </li>
+                    <li>
+                        <div class="tit">新密码：</div>
+                        <input type="password" name="usernewpwd" id="" class="t" value="">
+                    </li>
+                    <li>
+                        <div class="tit">再次输入新密码：</div>
+                        <input type="password" name="usernewpwdcheck" id="" class="t" value="">
+                    </li>
+                    <li>
+                        <span class="btn btn-submit">提交</span>
+                        <a class="btn btn-back" href="/admin/article/list">返回</a>
+                    </li>
+                    <li>
+                        {{if msg}}<p style="color:#ff5256;">{{msg}}</p>{{/if}}
+                    </li>
+                </ul>
+
+            </form>
+        </div>
+        <script>
+            $(".btn-submit").on("click", function () {
+                $("form").submit();
+            })
+        </script>
+    </div>
+</body>
+</html>

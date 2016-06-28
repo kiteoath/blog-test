@@ -1,8 +1,11 @@
 var uuid = require("node-uuid");
+var eventproxy = require("eventproxy");
 
 var models = require("../models");
 var articleModel = models.Article;
 var userModel = models.User;
+var navigationModel = models.Navigation;
+var settingsModel = models.Settings;
 
 var authorGetUser = function(authorid) {
     return new Promise(function(resolve, reject) {
@@ -30,8 +33,20 @@ var authorGetArticle = function(author) {
 
 
 var blogController = {
+    global : function (req, res, next) {
+        var ep = eventproxy.create("nav", "sets", function (nav, sets) {
+            res.locals.nav = nav;
+            res.locals.sets = sets;
+            next();
+        });
+        ep.fail(next);
+
+        navigationModel.find().exec(ep.done("nav"));
+
+        settingsModel.findOne().exec(ep.done("sets"))
+    },
     home : function(req, res, next) {
-        articleModel.find().populate("author").exec(function(err, articles) {
+        articleModel.find().exec(function(err, articles) {
             if(err){
                 return next(err);
             }
@@ -40,17 +55,26 @@ var blogController = {
     },
     article : function(req, res, next) {
         var articleid = req.params.articleid;
-        if(!articleid){
+        articleid = !articleid ? "" : articleid.replace(" ", "");
+        if(articleid == ""){
             res.redirect("/");
         }else{
-            articleModel.findOne({articleid : articleid}).populate("author").exec(function(err, article) {
+            articleModel.findOne({articleid : articleid}).exec(function(err, article) {
                 if(err){
                     next(err);
                 }else{
                     if(!article){
                         next();
                     }
-                    res.render("blog/article", {article : article});
+                    userModel.findOne({uid : article.author}).exec(function (err, user) {
+                        if(err){
+                            return next(err);
+                        }
+                        if(!user){
+                            return next();
+                        }
+                        res.render("blog/article", {article : article, author : user});
+                    })
                 }
             });
         }
@@ -70,7 +94,6 @@ var blogController = {
                 .catch(function(err) {
                     next(err);
                 });
-                console.log("1111111111");
         }
     }
 }

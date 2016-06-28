@@ -6,12 +6,13 @@ var mongoose = require("mongoose");
 var ueditor = require("ueditor");
 var multer = require("multer");
 var path = require("path");
+var eventproxy = require("eventproxy");
 
 var models = require("../models");
 var userModel = models.User;
 var articleModel = models.Article;
-
-
+var settingsModel = models.Settings;
+var navigationModel  = models.Navigation;
 
 var storage = multer.diskStorage({
     destination: function (request, file, callback) {
@@ -80,23 +81,16 @@ var apiController = {
         });
     },
     init : function (req, res, next) {
-        var _id = (new mongoose.Types.ObjectId()).toString();
+        var uid = uuid.v4();
         var user = new userModel({
-            _id : _id,
-            uid : uuid.v4(),
+            uid : uid,
             username : "admin",
             userpwd : bcrypt.hashSync("admin", 10),
             nickname : "我是管理员",
             brief : "介绍一下你自己吧，不要超过 200 字。",
             cover : "/public/images/article-2.jpg",
             avator : "/public/images/heart.jpg"
-        })
-        user.save(function (err) {
-            if(err)
-                return next(err);
         });
-
-
         var article = [
             new articleModel({
                 articleid : uuid.v4(),
@@ -107,7 +101,7 @@ var apiController = {
                 feature : "2",
                 recommend : "2",
                 status : "1",
-                author : _id,
+                author : uid,
 
                 create_at : Date.now(),
                 update_at : Date.now()
@@ -121,22 +115,49 @@ var apiController = {
                 feature : "2",
                 recommend : "2",
                 status : "2",
-                author : _id,
+                author : uid,
 
                 create_at : Date.now(),
                 update_at : Date.now()
             }),
-        ]
+        ];
+        var settings = new settingsModel({
+            name : "张三的测试博客",
+            brief : "Thoughts, stories and ideas.",
+            logo : null,
+            background : null,
+            page : 5,
+            code_head : null,
+            code_foot : null
+        });
+        var navigation = new navigationModel({
+            id : uuid.v4(),
+            name : "首页",
+            url : "/"
+        });
 
-        for(var item in article){
-            article[item].save(function (err) {
-                if(err)
-                    return next(err);
-            });
+        var ep = new eventproxy();
+        ep.all("user", "settings", "navigation", "article", function () {
+            res.clearCookie("access-token");
+            res.redirect("/admin");
+        });
+        ep.after("insertarticles", article.length, function () {
+            ep.emit("article");
+        });
+        ep.fail(function (err) {
+            return next(err);
+        })
+
+        user.save(ep.done("user"));
+
+        settings.save(ep.done("settings"));
+
+        navigation.save(ep.done("navigation"));
+
+
+        for(var i = 0; i < article.length; i ++){
+            article[i].save(ep.group("insertarticles"));
         }
-
-        res.clearCookie("access-token");
-        res.redirect("/admin");
     },
 }
 

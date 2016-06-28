@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导航设置</title>
+
+    {{include "public/head"}}
+    <style>
+        .base-edit .btn-del{ display:inline-block; width:32px; height:32px; background:url(/public/images/ico-btn-del.png) no-repeat center center; cursor:pointer;}
+        .base-edit .btn-add{ display:inline-block; width:32px; height:32px; background:url(/public/images/ico-btn-add.png) no-repeat center center; cursor:pointer;}
+        .base-edit .btn-save{ display:inline-block; width:32px; height:32px; background:url(/public/images/ico-btn-save.png) no-repeat center center; cursor:pointer;}
+    </style>
+</head>
+<body>
+{{include "public/top"}}
+{{include "public/nav"}}
+<div class="container">
+
+    <div class="content">
+        <h2 class="title">邀请注册</h2>
+        <form class="wrap base-edit article-edit" action="" method="post">
+            <p style="padding:0 0 30px 100px;">Ghost 可以帮你在主题模板的页头和页脚插入额外的代码，从而免去直接修改模板文件的麻烦。这一功能允许你快速插入或修改比如“统计代码”和“元数据”等。</p>
+            <ul>
+                <li>
+                    <h3>页头</h3>
+                    <p>在这里输入的代码将通过 {{"\{\{code_head\}\}"}} 标志插入到每一页的页头位置</p>
+                    <textarea name="code_head" id="" cols="50" rows="20" style="width:80%;height:200px;">{{code_head}}</textarea>
+                </li>
+                <li>
+                    <h3>页页脚</h3>
+                    <p>在这里输入的代码将通过 {{"\{\{code_foot\}\}"}} 标志插入到每一页的页脚位置</p>
+                    <textarea name="code_foot" id="" cols="50" rows="20" style="width:80%;height:200px;">{{code_foot}}</textarea>
+                </li>
+                <li>
+                    <span class="btn btn-submit">保存</span>
+                    <a class="btn btn-back" href="/admin/article/list">返回</a>
+                </li>
+            </ul>
+
+        </form>
+    </div>
+    <script>
+        $(".btn-submit").on("click", function () {
+            $("form").submit();
+        })
+    </script>
+</div>
+</body>
+</html>
